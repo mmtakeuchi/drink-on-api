@@ -1,19 +1,21 @@
-class SessionController < ApplicationController
-    def create
+class SessionsController < ApplicationController
+    def login
         user = User.find_by(username: params[:username])
-        if user&.authenticate(params[:password])
-          token = issue_token(user)
-          render json: {user: {id: user.id, username: user.username}, token: token}
+        if user && user.authenticate(params[:password])
+            payload = {user_id: user.id}
+            token = encode_token(payload)
+            render json: { user: user, jwt: token }
         else
-          render json: {errorMessages: {login: "username or password is wrong"} }
+            render json: {status: "error", message: "We don't find such an user according to your information,please try again."}
         end
-      end
-    
-      def show
-        if logged_in?
-          render json: {user: {id: current_user.id, username: current_user.username} }
+    end
+                                
+   
+    def auto_login
+        if session_user
+            render json: session_user
         else
-          render json: {errorMessages: {session: "Please login to continue"}}
-        end
-      end
+            render json: {errors: "No User Logged In."}
+        end     
+    end
 end
