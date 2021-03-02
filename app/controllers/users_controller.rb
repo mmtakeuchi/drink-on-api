@@ -1,26 +1,49 @@
 class UsersController < ApplicationController
-  
-  def index 
-    users = User.all
-    
-    render json: users
+  before_action :authorized, only: [:authenticate]
 
+      
+  def index
+    @users = User.all
+       if @users
+          render json: {
+          users: @users
+       }
+      else
+          render json: {
+          status: 500,
+          errors: ['no users found']
+      }
+     end
   end
 
   def show
-    user = User.find_by(id: params[:id])
-    render json: { user: current_user }
+   @user = User.find(params[:id])
+       if @user
+          render json: {
+          user: @user
+       }
+       else
+          render json: {
+          status: 500,
+          errors: ['user not found']
+        }
+       end
   end
-
+  
   def create
-    user = User.new(user_params)
-    if user.save
-      payload = {user_id: user.id}
-      token = encode_token(payload)
-      render json: { user: user, jwt: token} 
-    else
-      render json: { errorMessages: user.errors.messages }, status: :not_acceptable
-    end
+     @user = User.new(user_params)
+         if @user.save
+             login!  
+             render json: {
+             status: :created,
+             user: @user
+         }
+        else 
+            render json: {
+            status: 500,
+            errors: @user.errors.full_messages
+        }
+        end
   end
 
   private
@@ -28,4 +51,5 @@ class UsersController < ApplicationController
   def user_params
     params.permit(:username, :password, :email)
   end
+
 end

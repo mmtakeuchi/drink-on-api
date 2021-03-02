@@ -1,11 +1,15 @@
 Rails.application.routes.draw do
-  resources :comments
-  resources :likes
-  resources :users
-  resources :cocktails
 
-  post '/login', to: 'sessions#login'
-  get '/auto_login', to: 'sessions#auto_login'
-  post '/signup', to: 'users#create'
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  
+  post '/login',    to: 'sessions#create'
+  post '/logout',   to: 'sessions#destroy'
+  get '/logged_in', to: 'sessions#is_logged_in?'
+  
+  resources :users, only: [:create, :show, :index] 
+  
+  resources :cocktials, only: [:create, :index, :show] do
+    resources :likes
+    resources :comments, only: [:create, :index]
+  end
+
 end
