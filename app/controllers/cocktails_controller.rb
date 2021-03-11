@@ -10,7 +10,7 @@ class CocktailsController < ApplicationController
 
   # GET /cocktails/1
   def show
-    render json: @cocktail
+    render json: @cocktail, include: {user: @current_user, comments: @comments}
   end
 
   # POST /cocktails
@@ -46,6 +46,6 @@ class CocktailsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def cocktail_params
-      params.require(:cocktail).permit(:name, :image, :ingredients, :instructions)
+      params.require(:cocktail).permit(:name, :image, :ingredients, :user_id)
     end
 end

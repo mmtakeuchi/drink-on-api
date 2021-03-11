@@ -3,5 +3,5 @@ class Cocktail < ApplicationRecord
     has_many :likes
     has_many :comments
 
-    validates :body, presence: true 
+    validates :name, :ingredients, presence: true 
 end

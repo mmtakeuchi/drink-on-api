@@ -7,9 +7,9 @@ Rails.application.routes.draw do
   
   resources :users, only: [:create, :show, :index] 
   
-  resources :cocktials, only: [:create, :index, :show] do
+  resources :cocktails do
+    resources :comments, only: [:create, :index, :update, :destroy]
     resources :likes
-    resources :comments, only: [:create, :index]
   end
 
 end

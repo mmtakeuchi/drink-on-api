@@ -3,9 +3,10 @@ class CommentsController < ApplicationController
 
   # GET /comments
   def index
-    @comments = Comment.all
+    @comments = Comment.where(cocktail_id: params[:cocktail_id])
+    @user = User.find_by_id(params[:user_id])
 
-    render json: @comments
+    render json: @comments, include: {user: @user}
   end
 
   # GET /comments/1
@@ -18,7 +19,7 @@ class CommentsController < ApplicationController
     @comment = Comment.new(comment_params)
 
     if @comment.save
-      render json: @comment, status: :created, location: @comment
+      render json: @comment, status: :created
     else
       render json: @comment.errors, status: :unprocessable_entity
     end

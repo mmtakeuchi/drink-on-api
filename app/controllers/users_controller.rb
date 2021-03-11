@@ -1,7 +1,4 @@
 class UsersController < ApplicationController
-  before_action :authorized, only: [:authenticate]
-
-      
   def index
     @users = User.all
        if @users
@@ -32,11 +29,12 @@ class UsersController < ApplicationController
   
   def create
      @user = User.new(user_params)
+
          if @user.save
              login!  
              render json: {
-             status: :created,
-             user: @user
+               status: :created,
+               user: @user
          }
         else 
             render json: {
@@ -49,7 +47,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:username, :password, :email)
+    params.permit(:username, :password)
   end
 
 end
